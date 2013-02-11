@@ -11,7 +11,7 @@ Important to realize is that this strategy is not necessarily the best choice ag
 This small application replicates the Axelrod tournament and provides interactive d3-graphs to toy around with the concept of the Axelrod tournament and the question why and how tit-for-tat is successful. In game theory courses, the how and why is often brushed over. Tit-for-tat is the most successful, but there are several questions you could ask. How much better does tit-for-tat perform? What strategies does it benefit most from (e.g. in which environment could tit-for-tat be a bad strategy)?
 This application runs only locally so far, but there are plans to deploy it. For now, there is the option to change the payoffs and the population the strategy is playing against (i.e. a very cooperative environment or a very non-cooperative environment).
 
-You can now visit the application [here](http://warm-headland-4468.herokuapp.com/)!
+You can now visit the application [here](http://titfortat.herokuapp.com/)!
 
 # to do
 
