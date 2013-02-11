@@ -14,6 +14,8 @@ Source:
 
 A replication of the famous tournament where tit-for-tat was the big winner. A classic in every game theory, but often the performance of tit-for-tat is assumed. This app allows to get some better graphical grasp of why it performs that well, what strategies it performs well with and how much better it actually performs than other strategies.
 
+You can now visit the application [here](http://titfortat.herokuapp.com/)!
+
 Source:
 [Axelrod, R. (1984). The evolution of cooperation. New York: Basic Books](http://books.google.com/books/about/The_Evolution_of_Cooperation.html?id=KFf2HXzVO58C)
 
