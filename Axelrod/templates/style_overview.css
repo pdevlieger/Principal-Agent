@@ -1,0 +1,77 @@
+			body {
+				font-family: "Helvetica Neue", Helvetica;
+			}
+			
+			path {
+				stroke-width: 1;
+				fill: none;
+			}
+			
+			.data_1 {
+				stroke: gold;
+			}
+
+			.data_2 {
+				stroke: olive;
+			}
+
+			.data_3 {
+				stroke: grey;
+			}
+
+			.data_4 {
+				stroke: blue;
+			}
+
+			.data_5 {
+				stroke: green;
+			}
+
+			.data_6 {
+				stroke: red;
+			}
+
+			.data_7 {
+				stroke: purple;
+			}
+
+			.data_8 {
+				stroke: brown;
+			}
+
+			.data_9 {
+				stroke: magenta;
+			}
+
+			.data_10 {
+				stroke: black;
+			}
+
+			.axis {
+			  shape-rendering: crispEdges;
+			}
+
+			.x.axis line {
+			  stroke: lightgrey;
+			}
+
+			.x.axis .minor {
+			  stroke-opacity: .5;
+			}
+
+			.x.axis path {
+			  display: none;
+			}
+			
+			.x.axis text {
+				font-size: 10px;
+			}
+
+			.y.axis line, .y.axis path {
+			  fill: none;
+			  stroke: #000;
+			}
+			
+			.y.axis text {
+				font-size: 10px;
+			}

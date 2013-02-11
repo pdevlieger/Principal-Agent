@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{name}} stats</title>
+  </head>
+  <body>
+    <h1>STATS {{name}}</h1>
+      <h3>Permanent stats</h3>
+      <ul id ="permanent">
+        <li>Average rating: {{stats['Final rating']}}</li>
+      {% for key in stats if key != 'Final rating' and key != '_id' and key != 'name' %}
+        <li>{{key}}: {{stats[key]}}</li>
+      {% endfor %}
+      </ul>
+  <hr>
+  
+      <h3>Last Match</h3>
+      {{last_match.home_team}} {{last_match.score}} {{last_match.away_team}}
+      <ul id ="match">
+      {% for key in last_match if last_match[key] > 0  %}
+        <li>{{key}}: {{last_match[key]}}</li>
+      {% endfor %}
+      {% for key in last_match if last_match[key] == True  %}
+        <li>{{key}}: {{last_match[key]}}</li>
+      {% endfor %}
+      </ul>
+      <h3>Next Match</h3>
+      {{next_match.home_team}} --- {{next_match.away_team}}
+  </body>
+</html>

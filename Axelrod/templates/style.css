@@ -1,0 +1,47 @@
+			body {
+				font-family: "Helvetica Neue", Helvetica;
+			}
+			
+			path {
+				stroke-width: 1;
+				fill: none;
+			}
+			
+			.data {
+				stroke: black;
+				opacity: .2;
+			}
+
+			.data_ave {
+				stroke: blue;
+				opacity: 1;
+			}
+
+			.axis {
+			  shape-rendering: crispEdges;
+			}
+
+			.x.axis line {
+			  stroke: lightgrey;
+			}
+
+			.x.axis .minor {
+			  stroke-opacity: .5;
+			}
+
+			.x.axis path {
+			  display: none;
+			}
+			
+			.x.axis text {
+				font-size: 10px;
+			}
+
+			.y.axis line, .y.axis path {
+			  fill: none;
+			  stroke: #000;
+			}
+			
+			.y.axis text {
+				font-size: 10px;
+			}
