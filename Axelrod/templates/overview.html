@@ -151,13 +151,16 @@
     	var names_2 = ["cooperate", "defect", "of the time", "of the time", " ",
     	             "then reciprocate", "then switch", "then switch",
     	             "strategy", "opponent defects"]
-
+        
+        var high = d3.max(averages);
+        var low = d3.min(averages);
+        
     	var svg = d3.select("body").append("svg").attr("width", 1100).attr("height", 200);
     	svg.append("text").attr("x", 455).attr("y", 30).text("Average payoffs per strategy")
     	                  .attr("font-family", "sans-serif").attr("font-size", 14);
     	svg.selectAll("rect").data(averages).enter().append("rect")
-    	                     .attr("x", function(d,i) { return 15 + i*110;}).attr("y", function(d) {return 300 - d*100;})
-    	                     .attr("width", 80).attr("height",  function(d) { return d * 100 - 150 ;})
+    	                     .attr("x", function(d,i) { return 15 + i*110;}).attr("y", function(d) {return (high-d)/(high-low)*80+40;})
+    	                     .attr("width", 80).attr("height",  function(d) { return (d-low)/(high-low)*80+20;})
     	                     .attr("fill", function(d,i) { return colors[i];});
         svg.selectAll("text_1").data(names_1).enter().append("text").text(function(d) {return d;})
                              .attr("x", function (d,i) { return i * (110) + 55 ;})
@@ -171,7 +174,7 @@
                              .attr("text-anchor", "middle");
         svg.selectAll("numbers").data(averages).enter().append("text").text( function(d) {return d;})
                              .attr("x", function (d,i) { return i * (110) + 55 ;})
-                             .attr("y", function (d) { return 314 - d*100 ;})
+                             .attr("y", function (d) { return (high-d)/(high-low)*80+54 ;})
                              .style("fill", "white").style("font", "bold").style("font-size", "12")
                              .attr("font-family", "sans-serif").attr("text-anchor", "middle");
                              
