@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from pridil import get_payoffs, get_all_strategies
 from strategies import all
 import numpy as np
+import os
 
 app = Flask(__name__)
 
@@ -19,7 +20,7 @@ names = {"tft": "Tit for tat", 'ac': "Always cooperate", "ad": "Always defect",
 
 def get_value(form_input, default):
     if request.form[form_input]:
-    	return int(request.form[form_input])
+        return int(request.form[form_input])
     else:
         return default
 
@@ -40,7 +41,7 @@ def strategy_overview(strategy_name):
         sucker = get_value('sucker', 0)
         winner = get_value('winner', 5)
         dict, array, max = get_payoffs(all[strategy_name], iterations, coop, defect, sucker, winner, True, None)
-        return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=iterations, max=max)
+        return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=iterations, max=max, name=names[strategy_name])
 
 @app.route('/overview', methods=["GET", "POST"])
 def overview():
@@ -72,4 +73,5 @@ def overview():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port_number = int(os.environ.get('PORT', 5000))
+    app.run(host = '0.0.0.0', port = port_number, debug=True)

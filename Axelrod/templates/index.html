@@ -1,32 +1,104 @@
 <html>
 	<head>
-		<title>Title tk</title>
+		<title>Tit for Tat Analysis tool</title>
 		<script src="http://mbostock.github.com/d3/d3.v2.js"></script>
-        <style type=text/css>{{ get_resource_as_string('templates/style_index.css') }}</style>	
+        <style>
+        
+        	body {
+				font-family: "Courier New", Courier;
+			}
+			
+			p {
+				font-size: 14;
+				margin-top: 30px;
+				margin-bottom: 30px;				
+				margin-right: auto;
+				margin-left: auto;
+				width: 700px;
+				text-align: justify;
+				text-justify: inter-word;
+			}
+			
+			p.source {
+				font-size: 14;
+				margin-right: auto;
+				margin-left: auto;
+				width: 700px;
+				text-align: justify;
+				text-justify: inter-word;			    
+			}
+
+			img {
+			    display: block;
+			    margin-left: auto;
+			    margin-right: auto;
+			}
+			
+			table.center {
+			    font-size: 14;
+				margin-right: auto;
+				margin-left: auto;
+			}
+			
+			td {
+			    width: 400;
+			}
+			
+        </style>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     </head>
 	<body>
 	
-	<h1 font-size="16" style="text-align:center">Tit for Tat</h1>
+	<h1 style="text-align:center">Tit for Tat</h1>
+	<h2 style="text-align:center">An analysis tool</h1>
 
-    <p>Some initial stuff on what tit for tat does</p>
+    <p>The Axelrod tournament is a pair of tournaments organized around 1980 by Rober Axelrod, professor of 
+    political science at the University of Michigan. The tournament was based around the Prisoner's Dilemma, 
+    a one-shot game, with payoffs as in the picture below. When both players cooperate, each player gets
+    a payoff of 3. When both players defect, each player gets a payoff of 1. When players play different strategies, 
+    the person who defects gets a payoff of 5, the person who wants to cooperate gets a payoff of 0.</p>
     
-    <img>image with the payoffs.</img>
+    <img src="http://www.emeraldinsight.com/content_images/fig/0070340509001.png" alt="Payoffs Prisoner's Dillema" height="276" width="471">
     
-    <p> Some more stuff on how the system works. Change payoffs, iterations and the population you are playing against.</p>
+    <p>Axelrod solicited strategies from other game theorists to compete in a tournament by setting out a 
+    strategy. Each strategy was paired with each other strategy and a random strategy for 200 iterations of 
+    the Prisoner's Dilemma game, and scored on the total points accumulated through the tournament. The winner 
+    was a very simple strategy submitted by Anatol Rapoport called "Tit for Tat" (TFT) that cooperates on the 
+    first move, and subsequently echoes (reciprocates) what the other player did on the previous move. The results 
+    of the first tournament were analyzed and published, and a second tournament held to see if anyone could find a 
+    better strategy. Tit for Tat won again. Axelrod analyzed the results, and made some interesting discoveries 
+    about the nature of cooperation, which he describes in his book <a href="http://books.google.com/books/about/The_Evolution_of_Cooperation.html?id=KFf2HXzVO58C" target="_blank">The evolution of cooperation</a>.</p>
+
     
-    <a href="/overview">The Axelrod tournament</a><br/>
+    <p>It must be realized that there really is no "best" strategy for prisoner's dilemma. Each individual strategy 
+    will work best when matched against a "worse" strategy. In order to win, a player must figure out his opponent's 
+    strategy and then pick a strategy that is best suited for the situation. When played against more than one player,
+    the optimal strategy depends on the population and the strategies they play. Furthermore, the best strategy depends
+    on the payoffs and the amount of iterations the game is played. This website provides a way to tweak these parameters 
+    and play around with iterated prisoner's dilemmas. The following link compares the different payoffs of the tournament. 
+    Furthermore, it is possible to change the amount of iterations, the payoffs and the population that plays the strategy.<br/>
     <br/>
-    <a href="/tft">Tit for Tat</a><br/>
-    <a href="/ac">Always cooperate</a><br/>
-    <a href="/ad">Always defect</a><br/>
-    <a href="/c_70">Cooperate 70% of the time</a><br/>
-    <a href="/c_switch">Cooperate first, then switch</a><br/>
-    <a href="/c_until_d">Cooperate until opponent defects</a><br/>
-    <a href="/d_70">Defect 70% of the time</a><br/>
-    <a href="/d_switch">Defect first, then switch</a><br/>
-    <a href="/ntft">Defect first, then reciprocate</a><br/>
-    <a href="/rand">Random strategy</a><br/>
-
-	
+    <table style="text-align:center" class="center"><tr><td><a href="/overview">The Axelrod tournament</a></td></tr></table><br/>
+    <br/>
+    The following links allow to look at how the different strategies perform against the different strategies. For each 
+    strategy, a blue line represents the average payoff and other lines represent how the strategy fares against the other 
+    strategies. This can give a better understanding why certain strategies work well in certain environments. It is possible 
+    to adjust the payoffs and the iterations. If you feel like adding a strategy, you can do that <a href="https://github.com/pdevlieger/Principal-Agent/tree/master/Axelrod" target="_blank">here</a>.</p>
+    
+    <table style="text-align:center" class="center"><tr><td><a text-justify="left" href="/tft">Tit for Tat</a></td>
+    <td><a text-justify="right" href="/ac">Always cooperate</a></td></tr>
+    <td><a text-justify="left" href="/ad">Always defect</a></td>
+    <td><a text-justify="right" href="/c_70">Cooperate 70% of the time</a></td></tr>
+    <td><a text-justify="left" href="/c_switch">Cooperate first, then switch</a></td>
+    <td><a text-justify="right" href="/c_until_d">Cooperate until opponent defects</a></td></tr>
+    <td><a text-justify="left" href="/d_70">Defect 70% of the time</a></td>
+    <td><a text-justify="right" href="/d_switch">Defect first, then switch</a></td></tr>
+    <td><a text-justify="left" href="/ntft">Defect first, then reciprocate</a></td>
+    <td><a text-justify="right" href="/rand">Random strategy</a></td></tr></table>
+    <br/><br/>
+    <h3 style="text-align:center">Sources</h3>
+    <p style="margin-top:10px;">This text loosely draws upon <a href="http://www-cs-faculty.stanford.edu/~eroberts/courses/soco/projects/1998-99/game-theory/axelrod.html" target="_blank">this</a> and 
+    <a href="http://en.wikipedia.org/wiki/Evolution_of_cooperation#Axelrod.27s_tournaments" target="_blank">this</a>.
+    </p>
 	</body>
 </html>

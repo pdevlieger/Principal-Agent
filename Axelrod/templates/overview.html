@@ -1,10 +1,13 @@
 <html>
 	<head>
-		<title>Title tk</title>
+		<title>The Axelrod tournament.</title>
 		<script src="http://mbostock.github.com/d3/d3.v2.js"></script>
         <style type=text/css>{{ get_resource_as_string('templates/style_overview.css') }}</style>	
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     </head>
 	<body>
+
+	<h1 style="text-align:center">The Axelrod Tournament</h1>
 
 	<div id="graph" class="aGraph" style="text-align:center"></div>
 
@@ -131,6 +134,12 @@
     	graph.append("svg:text").attr("x", 680).attr("y", 310).attr("font-size", 10).attr("fill", "white").text("Reset").on("click", function() { reset();});
 
 	</script>
+	
+	<p>The lines each represent the different strategies over the course of a tournament. To get a better view 
+	of how the strategies perform, the average payoff of the strategy is also given in the histogram, where colors 
+	match the colors in the line graph. This allows for a better comparison between the strategies. It is 
+	possible to tweak and change the parameters to see what strategies fare well under which conditions.</p>
+
 
 	<script>
         var averages = [{{averages.ac}}, {{averages.ad}}, {{averages.c_70}}, {{averages.d_70}},{{averages.tft}},
@@ -166,44 +175,38 @@
                              .style("fill", "white").style("font", "bold").style("font-size", "12")
                              .attr("font-family", "sans-serif").attr("text-anchor", "middle");
                              
-	</script>    	
+	</script>
+	<p>
+    <table class="center"><tr><td><a href="/">home</a></td></tr></table>  	
+    </p>
     
     <hr>
-    
-    <form action="/overview" method="POST">
-	    coop
-        <input type="int" name="coop">
-        defect
-        <input type="int" name="defect">
-        winner
-        <input type="int" name="winner">
-        sucker
-        <input type="int" name="sucker">
-        iterations
-        <input type="int" name="iterations"><br>
-        Always cooperate
-        <input type="int" name="ac">
-        Always defect
-        <input type="int" name="ad">
-        Cooperate 70% of the time
-        <input type="int" name="c_70">
-        Cooperate, then switch
-        <input type="int" name="c_switch">
-        Cooperate until D is played
-        <input type="int" name="c_until_d">
-        Defect 70% of the time
-        <input type="int" name="d_70">
-        Defect, then switch
-        <input type="int" name="d_switch">
-        Defect, reciprocate
-        <input type="int" name="ntft">
-        Randomized
-        <input type="int" name="rand">
-        Tit for Tat
-        <input type="int" name="tft">
 
-        <input type="submit" name="my-form" value="Update">
+    <p>
+    <form action="/overview" method="POST">
+    <table class="center"><tr><td>Choose payoffs and iterations</td></tr></table>  	
+    <table style="text-align:center" class="center">
+    <tr><td class="text">Payoff when both cooperate</td><td class="input"><input type="int" name="coop"></td>
+    <td class="text">Payoff when both defect</td><td class="input"><input type="int" name="defect"></td></tr>
+    <tr><td class="text">Payoff for the backstabber</td><td class="input"><input type="int" name="winner"></td>
+    <td class="text">Payoff for the sucker</td><td class="input"><input type="int" name="sucker"></td></tr>
+    <tr class="center"><td class="text">Iterations</td><td class="input"><input type="int" name="iterations"></td></tr></table>
+    <table class="center"><tr><td>Choose population of strategies</td></tr></table>  	
+    <table style="text-align:center" class="center">
+    <tr><td class="text">Always cooperate</td><td class="input"><input type="int" name="ac"></td>
+    <td class="text">Always defect</td><td class="input"><input type="int" name="ad"></td></tr>
+    <tr><td class="text">Cooperate 70% of the time</td><td class="input"><input type="int" name="c_70"></td>
+    <td class="text">Cooperate first, then switch</td><td class="input"><input type="int" name="c_switch"></td></tr>
+    <tr><td class="text">Cooperate until D is played</td><td class="input"><input type="int" name="c_until_d"></td>
+    <td class="text">Defect 70% of the time</td><td class="input"><input type="int" name="d_70"></td></tr>
+    <tr><td class="text">Defect first, then switch</td><td class="input"><input type="int" name="d_switch"></td>
+    <td class="text">Defect first, the reciprocate</td><td class="input"><input type="int" name="ntft"></td></tr>
+    <tr><td class="text">Random strategy</td><td class="input"><input type="int" name="d_switch"></td>
+    <td class="text">Tit for Tat</td><td class="input"><input type="int" name="tft"></td></tr>
+    <tr><td class="input"><input type="submit" name="my-form" value="Update"></td></tr>
+    </table>
     </form>
+	</p>
 
 	</body>
 </html>

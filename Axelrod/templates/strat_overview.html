@@ -1,12 +1,13 @@
 <html>
 	<head>
-		<title>Title tk</title>
+		<title>Strategy overview: {{name}}</title>
 		<script src="http://mbostock.github.com/d3/d3.v2.js"></script>
         <style type=text/css>{{ get_resource_as_string('templates/style.css') }}</style>	
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     </head>
 	<body>
 	
-	<h1 font-size="16" style="text-align:center">{{name}}</h1>
+	<h1 style="text-align:center" style="font-style:Courier New;">{{name}}</h1>
 
 	<div id="graph" class="aGraph" style="text-align:center"></div>
 
@@ -142,25 +143,28 @@
 
 	</script>
     
-    <p>This will contain paragraph information and some small insights on how the strategy performs. Why some lines
-    red? Why others green? How does the clikcing work? How does the update of the parameters work? Notice how friendly
-    and unfriendly strategies perform.</p>
+    <p>The blue line here represents the average payoff profile of the strategy "{{name}}". To see how the strategy 
+    performs, click on the box of the strategy on the right of the picture. The strategies are colored green and red. 
+    These colors represent whether the strategy is friendly (green) or unfriendly (red). Random is left black as it 
+    can't really be considered friendly or unfriendly. There is an 
+    opportunity to tweak and play with the payoffs and the iterations.
+    <table class="center"><tr><td><a href="/">home</a></td></tr></table>
     
-    <hr>
+    </p>
 
+    <hr>
+    
+    <p>
     <form action="{{ redirection }}" method="POST">
-	    coop
-        <input type="int" name="coop">
-        defect
-        <input type="int" name="defect">
-        winner
-        <input type="int" name="winner">
-        sucker
-        <input type="int" name="sucker">
-        iterations
-        <input type="int" name="iterations">
-        <input type="submit" name="my-form" value="Update">
+    <table style="text-align:center" class="center">
+    <tr><td class="text">Payoff when both cooperate</td><td class="input"><input type="int" name="coop"></td>
+    <td class="text">Payoff when both defect</td><td class="input"><input type="int" name="defect"></td></tr>
+    <tr><td class="text">Payoff for the backstabber</td><td class="input"><input type="int" name="winner"></td>
+    <td class="text">Payoff for the sucker</td><td class="input"><input type="int" name="sucker"></td></tr>
+    <tr><td class="text">Iterations</td><td class="input"><input type="int" name="iterations"></td>
+    <td class="input"><input type="submit" name="my-form" value="Update"></td></tr>
+    </table>
     </form>
-	
+	</p>
 	</body>
 </html>

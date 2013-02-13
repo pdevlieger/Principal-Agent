@@ -1,5 +1,5 @@
-			body {
-				font-family: "Helvetica Neue", Helvetica;
+			html {
+				 font-family: "Courier New", Courier;
 			}
 			
 			path {
@@ -44,4 +44,29 @@
 			
 			.y.axis text {
 				font-size: 10px;
+			}
+			
+			p {
+				font-size: 14;
+				margin-top: 0px;
+				margin-bottom: 0px;				
+				margin-right: auto;
+				margin-left: auto;
+				width: 1000px;
+				text-align: justify;
+				text-justify: inter-word;
+			}
+			
+			table.center {
+			    font-size: 14;
+				margin-right: auto;
+				margin-left: auto;
+			}
+			
+			td.text {
+			    width: 200;
+			}
+
+			td.input {
+			    width: 50;
 			}
