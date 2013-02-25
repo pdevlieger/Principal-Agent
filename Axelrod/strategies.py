@@ -4,7 +4,7 @@
 from random import randint, choice
 
 def tit_for_tat(iteration, opp_last_move):
-    """Cooperate first, then play opponent's last move"""
+    """Tit for tat"""
     return 'C' if iteration == 0 else opp_last_move
 
 def always_C(iteration, opp_last_move):
@@ -16,34 +16,36 @@ def always_D(iteration, opp_last_move):
     return 'D'
 
 def randomizer(iteration, opp_last_move):
-    """Play a random strategy"""
+    """Random strategy"""
     return choice(['D', 'C'])
 
 def switch_C(iteration, opp_last_move):
-    """Start with C, switch strategies after that."""
+    """Cooperate first, then switch"""
     return 'C' if iteration % 2 == 0 else 'D'
 
 def switch_D(iteration, opp_last_move):
-    """Start with D, switch strategies after that."""
+    """Defect first, then switch"""
     return 'D' if iteration % 2 == 0 else 'C'
 
 def nasty_tft(iteration, opp_last_move):
-    """Defect first, then play opponent's last move"""
+    """Defect first, then reciprocate"""
     return 'D' if iteration == 0 else opp_last_move
 
+# TODO: I don't think this actually works. There's no good way to retain
+# the piece of state that says "my opponent has defected before"
 def stubborn(iteration, opp_last_move):
-    """Cooperate, until opponent defects. Then always defect"""
+    """Cooperate until opponent defects"""
     if iteration == 0 or opp_last_move == 'C':
         return 'C'
     else:
         return 'D'
 
 def play_70C(iteration, opp_last_move):
-    """Cooperate 70% of the time."""
+    """Cooperate 70% of the time"""
     return 'C' if randint(0, 9) < 7 else 'D'
 
 def play_70D(iteration, opp_last_move):
-    """Defect 70% of the time."""
+    """Defect 70% of the time"""
     return 'D' if randint(0, 9) < 7 else 'C'
 
 strategies = {'tft': tit_for_tat, 'ac': always_C, 'ad': always_D, 'rand': randomizer,
