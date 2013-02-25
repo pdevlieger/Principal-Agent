@@ -46,6 +46,6 @@ def play_70D(iteration, opp_last_move):
     """Defect 70% of the time."""
     return 'D' if randint(0, 9) < 7 else 'C'
 
-all = {'tft': tit_for_tat, 'ac': always_C, 'ad': always_D, 'rand': randomizer,
-       'c_switch': switch_C, 'd_switch': switch_D, 'ntft': nasty_tft,
-       'c_until_d': stubborn, 'c_70': play_70C, 'd_70': play_70D}
+strategies = {'tft': tit_for_tat, 'ac': always_C, 'ad': always_D, 'rand': randomizer,
+              'c_switch': switch_C, 'd_switch': switch_D, 'ntft': nasty_tft,
+              'c_until_d': stubborn, 'c_70': play_70C, 'd_70': play_70D}

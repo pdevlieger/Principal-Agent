@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pridil import get_payoffs, get_all_strategies
-from strategies import all
+from strategies import strategies
 import numpy as np
 import os
 
@@ -32,7 +32,7 @@ def index():
 @app.route('/<strategy_name>', methods=["GET", "POST"])
 def strategy_overview(strategy_name):
     if request.method == "GET":
-        dict, array, max = get_payoffs(all[strategy_name], 200, 3, 1, 0, 5, True, None)
+        dict, array, max = get_payoffs(strategies[strategy_name], 200, 3, 1, 0, 5, True, None)
         return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=200, max=max, name=names[strategy_name])
     else:
         iterations = get_value('iterations', 200)
@@ -40,7 +40,7 @@ def strategy_overview(strategy_name):
         defect = get_value('defect', 1)
         sucker = get_value('sucker', 0)
         winner = get_value('winner', 5)
-        dict, array, max = get_payoffs(all[strategy_name], iterations, coop, defect, sucker, winner, True, None)
+        dict, array, max = get_payoffs(strategies[strategy_name], iterations, coop, defect, sucker, winner, True, None)
         return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=iterations, max=max, name=names[strategy_name])
 
 @app.route('/overview', methods=["GET", "POST"])

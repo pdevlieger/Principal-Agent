@@ -1,4 +1,4 @@
-import strategies
+from strategies import strategies
 import numpy as np
 
 def scores(tuple, coop, defect, sucker, winner):
@@ -21,7 +21,7 @@ class Agent():
 
 # I need to add a way to choose the population you are playing against.
 def get_payoffs(strategy, iterations, coop, defect, sucker, winner, complete_payoffs, weights):
-    strategy_name_tuples = [(k, Agent(v)) for k,v in strategies.all.iteritems()]
+    strategy_name_tuples = [(k, Agent(v)) for k,v in strategies.iteritems()]
     agent = Agent(strategy)
     list_of_strategies = []
     if weights:
@@ -57,7 +57,7 @@ def get_payoffs(strategy, iterations, coop, defect, sucker, winner, complete_pay
 
 def get_all_strategies(iterations, coop, defect, sucker, winner, weights):
     output = {}
-    for k,v in strategies.all.iteritems():
+    for k,v in strategies.iteritems():
         payoff = get_payoffs(v, iterations, coop, defect, sucker, winner, False, weights)
         output[k] = payoff
     ceiling = max([i[-1] for i in output.values()])
