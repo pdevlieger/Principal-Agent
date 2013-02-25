@@ -28,31 +28,39 @@ var ntft_data = {{ dict['ntft'] }}
 var rand_data = {{ dict['rand'] }}
 var tft_data = {{ dict['tft'] }}
 
+function set_defaults(line, rect, strokeColor) {
+    line.style("stroke", strokeColor);
+    line.style("opacity", 1);
+    rect.attr("fill", "black");
+    rect.attr("opacity", "0.3");
+}
+
 function set_prelim() {
-    ac.style("stroke", "olive"); ad.style("stroke", "red"); c_70.style("stroke", "green");
-    d_70.style("stroke", "purple"); c_switch.style("stroke", "blue"); d_switch.style("stroke", "magenta");
-    c_until_d.style("stroke", "grey"); ntft.style("stroke", "brown"); rand.style("stroke", "black");
-    tft.style("stroke", "gold");
-    ac_rect.attr("fill", "black"); ad_rect.attr("fill", "black"); c_70_rect.attr("fill", "black");
-    d_70_rect.attr("fill", "black"); c_switch_rect.attr("fill", "black"); d_switch_rect.attr("fill", "black");
-    c_until_d_rect.attr("fill", "black"); ntft_rect.attr("fill", "black"); rand_rect.attr("fill", "black");
-    tft_rect.attr("fill", "black");
-    ac_rect.attr("opacity", "0.3"); ad_rect.attr("opacity", "0.3"); c_70_rect.attr("opacity", "0.3");
-    d_70_rect.attr("opacity", "0.3"); c_switch_rect.attr("opacity", "0.3"); d_switch_rect.attr("opacity", "0.3");
-    c_until_d_rect.attr("opacity", "0.3"); ntft_rect.attr("opacity", "0.3"); rand_rect.attr("opacity", "0.3");
-    tft_rect.attr("opacity", "0.3");
-    ac.style("opacity", "1"); ad.style("opacity", "1"); c_70.style("opacity", "1");
-    d_70.style("opacity", "1"); c_switch.style("opacity", "1"); d_switch.style("opacity", "1");
-    c_until_d.style("opacity", "1"); ntft.style("opacity", "1"); rand.style("opacity", "1");
-    tft.style("opacity", "1");
+    var objs = [[ac, ac_rect, "olive"],
+                [ad, ad_rect, "red"],
+                [c_70, c_70_rect, "green"],
+                [d_70, d_70_rect, "purple"],
+                [c_switch, c_switch_rect, "blue"],
+                [d_switch, d_switch_rect, "magenta"],
+                [c_until_d, c_until_d_rect, "grey"],
+                [ntft, ntft_rect, "brown"],
+                [rand, rand_rect, "black"],
+                [tft, tft_rect, "gold"]];
+
+    for (var i=0; i<objs.length; i++) {
+        var obj = objs[i];
+        set_defaults(obj[0], obj[1], obj[2]);
+    }
 }
 
 function clear() {
+    var objs = [ac, ad, c_70, d_70, c_switch, d_switch, c_until_d, ntft, rand, tft];
+
     set_prelim()
-    ac.style("opacity", "0"); ad.style("opacity", "0"); c_70.style("opacity", "0");
-    d_70.style("opacity", "0"); c_switch.style("opacity", "0"); d_switch.style("opacity", "0");
-    c_until_d.style("opacity", "0"); ntft.style("opacity", "0"); rand.style("opacity", "0");
-    tft.style("opacity", "0");
+
+    for (var i=0; i<objs.length; i++) {
+        objs[i].style("opacity", "0");
+    }
 }
 
 function reset() {
