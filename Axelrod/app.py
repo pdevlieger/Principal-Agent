@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from pridil import get_payoffs, get_all_strategies
-from strategies import all
+from strategies import strategies
 import numpy as np
 import os
 
@@ -11,12 +11,6 @@ def get_resource_as_string(name, charset='utf-8'):
         return f.read().decode(charset)
 
 app.jinja_env.globals['get_resource_as_string'] = get_resource_as_string
-
-names = {"tft": "Tit for tat", 'ac': "Always cooperate", "ad": "Always defect",
-         "rand": "Random strategy", "c_switch": "Cooperate first, then switch", 
-         "d_switch": "Defect first, then switch", 'ntft': "Defect first, then receiprocate",
-         "c_until_d": "Cooperate until opponent defects", "c_70": "Cooperate 70% of the time",
-         "d_70": "Defect 70% of the time"}
 
 def get_value(form_input, default):
     if request.form[form_input]:
@@ -32,16 +26,16 @@ def index():
 @app.route('/<strategy_name>', methods=["GET", "POST"])
 def strategy_overview(strategy_name):
     if request.method == "GET":
-        dict, array, max = get_payoffs(all[strategy_name], 200, 3, 1, 0, 5, True, None)
-        return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=200, max=max, name=names[strategy_name])
+        dict, array, max = get_payoffs(strategies[strategy_name], 200, 3, 1, 0, 5, True, None)
+        return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=200, max=max, name=strategies[strategy_name].__doc__)
     else:
         iterations = get_value('iterations', 200)
         coop = get_value('coop', 3)
         defect = get_value('defect', 1)
         sucker = get_value('sucker', 0)
         winner = get_value('winner', 5)
-        dict, array, max = get_payoffs(all[strategy_name], iterations, coop, defect, sucker, winner, True, None)
-        return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=iterations, max=max, name=names[strategy_name])
+        dict, array, max = get_payoffs(strategies[strategy_name], iterations, coop, defect, sucker, winner, True, None)
+        return render_template('strat_overview.html', dict=dict, array=array, redirection=strategy_name, iterations=iterations, max=max, name=strategies[strategy_name].__doc__)
 
 @app.route('/overview', methods=["GET", "POST"])
 def overview():

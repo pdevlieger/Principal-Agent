@@ -1,213 +1,222 @@
 <html>
-	<head>
-		<title>The Axelrod tournament.</title>
-		<script src="http://mbostock.github.com/d3/d3.v2.js"></script>
-        <style type=text/css>{{ get_resource_as_string('templates/style_overview.css') }}</style>	
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    </head>
-	<body>
+  <head>
+    <title>The Axelrod tournament.</title>
+    <script src="http://mbostock.github.com/d3/d3.v2.js"></script>
+    <style type=text/css>{{ get_resource_as_string('templates/style_overview.css') }}</style>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  </head>
+  <body>
 
-	<h1 style="text-align:center">The Axelrod Tournament</h1>
+    <h1 style="text-align:center">The Axelrod Tournament</h1>
 
-	<div id="graph" class="aGraph" style="text-align:center"></div>
+    <div id="graph" class="aGraph" style="text-align:center"></div>
 
-	<script>
+    <script>
 
-		var m = [30, 200, 80, 80];
-		var w = 920 - m[1] - m[3];
-		var h = 430 - m[0] - m[2];
-		
-        var ac_data = {{ dict['ac'] }}
-        var ad_data = {{ dict['ad'] }}
-        var c_70_data = {{ dict['c_70'] }}
-        var c_switch_data = {{ dict['c_switch'] }}
-        var c_until_d_data = {{ dict['c_until_d'] }}
-        var d_70_data = {{ dict['d_70'] }}
-        var d_switch_data = {{ dict['d_switch'] }}
-        var ntft_data = {{ dict['ntft'] }}
-        var rand_data = {{ dict['rand'] }}
-        var tft_data = {{ dict['tft'] }}
-        
-        function set_prelim() {
-		    ac.style("stroke", "olive"); ad.style("stroke", "red"); c_70.style("stroke", "green");
-		    d_70.style("stroke", "purple"); c_switch.style("stroke", "blue"); d_switch.style("stroke", "magenta");
-		    c_until_d.style("stroke", "grey"); ntft.style("stroke", "brown"); rand.style("stroke", "black");
-		    tft.style("stroke", "gold");
-		    ac_rect.attr("fill", "black"); ad_rect.attr("fill", "black"); c_70_rect.attr("fill", "black");
-		    d_70_rect.attr("fill", "black"); c_switch_rect.attr("fill", "black"); d_switch_rect.attr("fill", "black");
-		    c_until_d_rect.attr("fill", "black"); ntft_rect.attr("fill", "black"); rand_rect.attr("fill", "black");
-		    tft_rect.attr("fill", "black");
-		    ac_rect.attr("opacity", "0.3"); ad_rect.attr("opacity", "0.3"); c_70_rect.attr("opacity", "0.3");
-		    d_70_rect.attr("opacity", "0.3"); c_switch_rect.attr("opacity", "0.3"); d_switch_rect.attr("opacity", "0.3");
-		    c_until_d_rect.attr("opacity", "0.3"); ntft_rect.attr("opacity", "0.3"); rand_rect.attr("opacity", "0.3");
-		    tft_rect.attr("opacity", "0.3");
-		    ac.style("opacity", "1"); ad.style("opacity", "1"); c_70.style("opacity", "1");
-		    d_70.style("opacity", "1"); c_switch.style("opacity", "1"); d_switch.style("opacity", "1");
-		    c_until_d.style("opacity", "1"); ntft.style("opacity", "1"); rand.style("opacity", "1");
-		    tft.style("opacity", "1");
-        }
+var m = [30, 200, 80, 80];
+var w = 920 - m[1] - m[3];
+var h = 430 - m[0] - m[2];
 
-		function clear() {
-		    set_prelim()
-		    ac.style("opacity", "0"); ad.style("opacity", "0"); c_70.style("opacity", "0");
-		    d_70.style("opacity", "0"); c_switch.style("opacity", "0"); d_switch.style("opacity", "0");
-		    c_until_d.style("opacity", "0"); ntft.style("opacity", "0"); rand.style("opacity", "0");
-		    tft.style("opacity", "0");
-		}
+var ac_data = {{ dict['ac'] }}
+var ad_data = {{ dict['ad'] }}
+var c_70_data = {{ dict['c_70'] }}
+var c_switch_data = {{ dict['c_switch'] }}
+var c_until_d_data = {{ dict['c_until_d'] }}
+var d_70_data = {{ dict['d_70'] }}
+var d_switch_data = {{ dict['d_switch'] }}
+var ntft_data = {{ dict['ntft'] }}
+var rand_data = {{ dict['rand'] }}
+var tft_data = {{ dict['tft'] }}
 
-		function reset() {
-		    set_prelim()
-		}
+function set_defaults(line, rect, strokeColor) {
+    line.style("stroke", strokeColor);
+    line.style("opacity", 1);
+    rect.attr("fill", "black");
+    rect.attr("opacity", "0.3");
+}
 
-		function opaque(var_1, var_2, color) {
-		    clear(); var_1.style("opacity", "1"); var_1.style("stroke", color);
-		    var_2.attr("fill", color); var_2.attr("opacity", "1");
-		}
+function set_prelim() {
+    var objs = [[ac, ac_rect, "olive"],
+                [ad, ad_rect, "red"],
+                [c_70, c_70_rect, "green"],
+                [d_70, d_70_rect, "purple"],
+                [c_switch, c_switch_rect, "blue"],
+                [d_switch, d_switch_rect, "magenta"],
+                [c_until_d, c_until_d_rect, "grey"],
+                [ntft, ntft_rect, "brown"],
+                [rand, rand_rect, "black"],
+                [tft, tft_rect, "gold"]];
 
-		var x = d3.scale.linear().domain([1, {{ iterations }}]).range([0, w]);
-		var y = d3.scale.linear().domain([0, {{ max }}]).range([h, 0]);
-		
-		var line = d3.svg.line()
-			.x(function(d,i) { 
-				return x(i+1);
-			})
-			.y(function(d) { 
-				return y(d);
-			})
-		
-		var graph = d3.select("#graph").append("svg:svg")
-		      .attr("width", w + m[1] + m[3])
-		      .attr("height", h + m[0] + m[2])
-		      .append("svg:g")
-		      .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
-		
-		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(1);
+    for (var i=0; i<objs.length; i++) {
+        var obj = objs[i];
+        set_defaults(obj[0], obj[1], obj[2]);
+    }
+}
 
-		graph.append("svg:g")
-		      .attr("class", "x axis")
-		      .attr("transform", "translate(0," + h + ")")
-		      .call(xAxis);
-		
-		var yAxisLeft = d3.svg.axis().scale(y).ticks(6).orient("left");
+function clear() {
+    var objs = [ac, ad, c_70, d_70, c_switch, d_switch, c_until_d, ntft, rand, tft];
 
-		graph.append("svg:g")
-		      .attr("class", "y axis")
-		      .attr("transform", "translate(-10,0)")
-		      .call(yAxisLeft);
-		
-    	var tft = graph.append("svg:path").attr("d", line(tft_data)).attr("class", "data_1");
-    	var ac = graph.append("svg:path").attr("d", line(ac_data)).attr("class", "data_2");
-    	var c_until_d = graph.append("svg:path").attr("d", line(c_until_d_data)).attr("class", "data_3");
-    	var c_switch = graph.append("svg:path").attr("d", line(c_switch_data)).attr("class", "data_4");
-    	var c_70 = graph.append("svg:path").attr("d", line(c_70_data)).attr("class", "data_5");
-    	var ad = graph.append("svg:path").attr("d", line(ad_data)).attr("class", "data_6");
-    	var d_70 = graph.append("svg:path").attr("d", line(d_70_data)).attr("class", "data_7");
-    	var ntft = graph.append("svg:path").attr("d", line(ntft_data)).attr("class", "data_8");
-    	var d_switch = graph.append("svg:path").attr("d", line(d_switch_data)).attr("class", "data_9");
-    	var rand = graph.append("svg:path").attr("d", line(rand_data)).attr("class", "data_10");
-    	
-    	graph.append("svg:text").attr("x", -200).attr("y", -70).attr("transform", "rotate(-90)").attr("font-size", 10).text("Utility earned");
-    	graph.append("svg:text").attr("x", 299).attr("y", 350).attr("font-size", 10).text("Iterations");
-    	
-        var tft_rect = graph.append("svg:rect").attr("x", 678).attr("y", -1).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-        var ntft_rect = graph.append("svg:rect").attr("x", 678).attr("y", 29).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var ac_rect = graph.append("svg:rect").attr("x", 678).attr("y", 59).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var ad_rect = graph.append("svg:rect").attr("x", 678).attr("y", 89).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var c_70_rect = graph.append("svg:rect").attr("x", 678).attr("y",119).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var d_70_rect = graph.append("svg:rect").attr("x", 678).attr("y",149).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var c_until_d_rect = graph.append("svg:rect").attr("x", 678).attr("y",179).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var rand_rect = graph.append("svg:rect").attr("x", 678).attr("y",209).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var c_switch_rect = graph.append("svg:rect").attr("x", 678).attr("y",239).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-    	var d_switch_rect = graph.append("svg:rect").attr("x", 678).attr("y",269).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
-     	graph.append("svg:rect").attr("x", 678).attr("y", 299).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 1);
+    set_prelim()
 
-    	graph.append("svg:text").attr("x", 680).attr("y", 10).attr("font-size", 10).attr("fill", "white").text("Tit for tat").on("click", function() { opaque(tft, tft_rect, "gold");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 40).attr("font-size", 10).attr("fill", "white").text("Defect first, then reciprocate").on("click", function() { opaque(ntft, ntft_rect, "brown");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 70).attr("font-size", 10).attr("fill", "white").text("Always cooperate").on("click", function() { opaque(ac, ac_rect, "olive");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 100).attr("font-size", 10).attr("fill", "white").text("Always defect").on("click", function() { opaque(ad, ad_rect, "red");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 130).attr("font-size", 10).attr("fill", "white").text("Cooperate 70% of the time").on("click", function() { opaque(c_70, c_70_rect, "green");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 160).attr("font-size", 10).attr("fill", "white").text("Defect 70% of the time").on("click", function() { opaque(d_70, d_70_rect, "purple");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 190).attr("font-size", 10).attr("fill", "white").text("Cooperate until opponent defects").on("click", function() { opaque(c_until_d, c_until_d_rect, "grey");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 220).attr("font-size", 10).attr("fill", "white").text("Random strategy").on("click", function() { opaque(rand, rand_rect, "black");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 250).attr("font-size", 10).attr("fill", "white").text("Cooperate first, then switch").on("click", function() { opaque(c_switch, c_switch_rect, "blue");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 280).attr("font-size", 10).attr("fill", "white").text("Defect first, then switch").on("click", function() { opaque(d_switch, d_switch_rect, "magenta");});
-    	graph.append("svg:text").attr("x", 680).attr("y", 310).attr("font-size", 10).attr("fill", "white").text("Reset").on("click", function() { reset();});
+    for (var i=0; i<objs.length; i++) {
+        objs[i].style("opacity", "0");
+    }
+}
 
-	</script>
-	
-	<p>The lines each represent the different strategies over the course of a tournament. To get a better view 
-	of how the strategies perform, the average payoff of the strategy is also given in the histogram, where colors 
-	match the colors in the line graph. This allows for a better comparison between the strategies. It is 
-	possible to tweak and change the parameters to see what strategies fare well under which conditions.</p>
+function reset() {
+    set_prelim()
+}
+
+function opaque(var_1, var_2, color) {
+    clear(); var_1.style("opacity", "1"); var_1.style("stroke", color);
+    var_2.attr("fill", color); var_2.attr("opacity", "1");
+}
+
+var x = d3.scale.linear().domain([1, {{ iterations }}]).range([0, w]);
+var y = d3.scale.linear().domain([0, {{ max }}]).range([h, 0]);
+
+var line = d3.svg.line()
+    .x(function(d,i) {
+        return x(i+1);
+    })
+    .y(function(d) {
+        return y(d);
+    })
+
+var graph = d3.select("#graph").append("svg:svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+    .append("svg:g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(1);
+
+graph.append("svg:g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + h + ")")
+    .call(xAxis);
+
+var yAxisLeft = d3.svg.axis().scale(y).ticks(6).orient("left");
+
+graph.append("svg:g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(-10,0)")
+    .call(yAxisLeft);
+
+var tft = graph.append("svg:path").attr("d", line(tft_data)).attr("class", "data_1");
+var ac = graph.append("svg:path").attr("d", line(ac_data)).attr("class", "data_2");
+var c_until_d = graph.append("svg:path").attr("d", line(c_until_d_data)).attr("class", "data_3");
+var c_switch = graph.append("svg:path").attr("d", line(c_switch_data)).attr("class", "data_4");
+var c_70 = graph.append("svg:path").attr("d", line(c_70_data)).attr("class", "data_5");
+var ad = graph.append("svg:path").attr("d", line(ad_data)).attr("class", "data_6");
+var d_70 = graph.append("svg:path").attr("d", line(d_70_data)).attr("class", "data_7");
+var ntft = graph.append("svg:path").attr("d", line(ntft_data)).attr("class", "data_8");
+var d_switch = graph.append("svg:path").attr("d", line(d_switch_data)).attr("class", "data_9");
+var rand = graph.append("svg:path").attr("d", line(rand_data)).attr("class", "data_10");
+
+graph.append("svg:text").attr("x", -200).attr("y", -70).attr("transform", "rotate(-90)").attr("font-size", 10).text("Utility earned");
+graph.append("svg:text").attr("x", 299).attr("y", 350).attr("font-size", 10).text("Iterations");
+
+var tft_rect = graph.append("svg:rect").attr("x", 678).attr("y", -1).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var ntft_rect = graph.append("svg:rect").attr("x", 678).attr("y", 29).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var ac_rect = graph.append("svg:rect").attr("x", 678).attr("y", 59).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var ad_rect = graph.append("svg:rect").attr("x", 678).attr("y", 89).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var c_70_rect = graph.append("svg:rect").attr("x", 678).attr("y",119).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var d_70_rect = graph.append("svg:rect").attr("x", 678).attr("y",149).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var c_until_d_rect = graph.append("svg:rect").attr("x", 678).attr("y",179).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var rand_rect = graph.append("svg:rect").attr("x", 678).attr("y",209).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var c_switch_rect = graph.append("svg:rect").attr("x", 678).attr("y",239).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+var d_switch_rect = graph.append("svg:rect").attr("x", 678).attr("y",269).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 0.3);
+graph.append("svg:rect").attr("x", 678).attr("y", 299).attr("width", 170).attr("height",15).attr("fill", "black").attr("opacity", 1);
+
+graph.append("svg:text").attr("x", 680).attr("y", 10).attr("font-size", 10).attr("fill", "white").text("Tit for tat").on("click", function() { opaque(tft, tft_rect, "gold");});
+graph.append("svg:text").attr("x", 680).attr("y", 40).attr("font-size", 10).attr("fill", "white").text("Defect first, then reciprocate").on("click", function() { opaque(ntft, ntft_rect, "brown");});
+graph.append("svg:text").attr("x", 680).attr("y", 70).attr("font-size", 10).attr("fill", "white").text("Always cooperate").on("click", function() { opaque(ac, ac_rect, "olive");});
+graph.append("svg:text").attr("x", 680).attr("y", 100).attr("font-size", 10).attr("fill", "white").text("Always defect").on("click", function() { opaque(ad, ad_rect, "red");});
+graph.append("svg:text").attr("x", 680).attr("y", 130).attr("font-size", 10).attr("fill", "white").text("Cooperate 70% of the time").on("click", function() { opaque(c_70, c_70_rect, "green");});
+graph.append("svg:text").attr("x", 680).attr("y", 160).attr("font-size", 10).attr("fill", "white").text("Defect 70% of the time").on("click", function() { opaque(d_70, d_70_rect, "purple");});
+graph.append("svg:text").attr("x", 680).attr("y", 190).attr("font-size", 10).attr("fill", "white").text("Cooperate until opponent defects").on("click", function() { opaque(c_until_d, c_until_d_rect, "grey");});
+graph.append("svg:text").attr("x", 680).attr("y", 220).attr("font-size", 10).attr("fill", "white").text("Random strategy").on("click", function() { opaque(rand, rand_rect, "black");});
+graph.append("svg:text").attr("x", 680).attr("y", 250).attr("font-size", 10).attr("fill", "white").text("Cooperate first, then switch").on("click", function() { opaque(c_switch, c_switch_rect, "blue");});
+graph.append("svg:text").attr("x", 680).attr("y", 280).attr("font-size", 10).attr("fill", "white").text("Defect first, then switch").on("click", function() { opaque(d_switch, d_switch_rect, "magenta");});
+graph.append("svg:text").attr("x", 680).attr("y", 310).attr("font-size", 10).attr("fill", "white").text("Reset").on("click", function() { reset();});
+
+    </script>
+
+    <p>The lines each represent the different strategies over the course of a tournament. To get a better view
+      of how the strategies perform, the average payoff of the strategy is also given in the histogram, where colors
+      match the colors in the line graph. This allows for a better comparison between the strategies. It is
+      possible to tweak and change the parameters to see what strategies fare well under which conditions.</p>
 
 
-	<script>
-        var averages = [{{averages.ac}}, {{averages.ad}}, {{averages.c_70}}, {{averages.d_70}},{{averages.tft}},
-                        {{averages.ntft}}, {{averages.c_switch}}, {{averages.d_switch}}, {{averages.rand}}, {{averages.c_until_d}}] 
-    	var colors = ["olive", "red", "green", "purple", "gold", "brown", "blue", "magenta", "black", "grey"]
-    	var names_1 = ["Always", "Always", "Cooperate 70%", "Defect 70%", "Tit for tat",
-    	             "Defect first,", "Cooperate first,", "Defect first,",
-    	             "Random", "Cooperate until"]
-    	var names_2 = ["cooperate", "defect", "of the time", "of the time", " ",
-    	             "then reciprocate", "then switch", "then switch",
-    	             "strategy", "opponent defects"]
-        
-        var high = d3.max(averages);
-        var low = d3.min(averages);
-        
-    	var svg = d3.select("body").append("svg").attr("width", 1100).attr("height", 200);
-    	svg.append("text").attr("x", 455).attr("y", 30).text("Average payoffs per strategy")
-    	                  .attr("font-family", "sans-serif").attr("font-size", 14);
-    	svg.selectAll("rect").data(averages).enter().append("rect")
-    	                     .attr("x", function(d,i) { return 15 + i*110;}).attr("y", function(d) {return (high-d)/(high-low)*80+40;})
-    	                     .attr("width", 80).attr("height",  function(d) { return (d-low)/(high-low)*80+20;})
-    	                     .attr("fill", function(d,i) { return colors[i];});
-        svg.selectAll("text_1").data(names_1).enter().append("text").text(function(d) {return d;})
-                             .attr("x", function (d,i) { return i * (110) + 55 ;})
-                             .attr("y", 164).style("fill", "black").style("font", "bold")
-                             .style("font-size", "12").attr("font-family", "sans-serif")
-                             .attr("text-anchor", "middle");
-        svg.selectAll("text_2").data(names_2).enter().append("text").text(function(d) {return d;})
-                             .attr("x", function (d,i) { return i * (110) + 55 ;})
-                             .attr("y", 180).style("fill", "black").style("font", "bold")
-                             .style("font-size", "12").attr("font-family", "sans-serif")
-                             .attr("text-anchor", "middle");
-        svg.selectAll("numbers").data(averages).enter().append("text").text( function(d) {return d;})
-                             .attr("x", function (d,i) { return i * (110) + 55 ;})
-                             .attr("y", function (d) { return (high-d)/(high-low)*80+54 ;})
-                             .style("fill", "white").style("font", "bold").style("font-size", "12")
-                             .attr("font-family", "sans-serif").attr("text-anchor", "middle");
-                             
-	</script>
-	<p>
-    <table class="center"><tr><td><a href="/">home</a></td></tr></table>  	
+    <script>
+
+var averages = [{{averages.ac}}, {{averages.ad}}, {{averages.c_70}}, {{averages.d_70}},{{averages.tft}},
+                {{averages.ntft}}, {{averages.c_switch}}, {{averages.d_switch}}, {{averages.rand}}, {{averages.c_until_d}}]
+var colors = ["olive", "red", "green", "purple", "gold", "brown", "blue", "magenta", "black", "grey"]
+var names_1 = ["Always", "Always", "Cooperate 70%", "Defect 70%", "Tit for tat",
+               "Defect first,", "Cooperate first,", "Defect first,",
+               "Random", "Cooperate until"]
+var names_2 = ["cooperate", "defect", "of the time", "of the time", " ",
+               "then reciprocate", "then switch", "then switch",
+               "strategy", "opponent defects"]
+
+var high = d3.max(averages);
+var low = d3.min(averages);
+
+var svg = d3.select("body").append("svg").attr("width", 1100).attr("height", 200);
+svg.append("text").attr("x", 455).attr("y", 30).text("Average payoffs per strategy")
+    .attr("font-family", "sans-serif").attr("font-size", 14);
+svg.selectAll("rect").data(averages).enter().append("rect")
+    .attr("x", function(d,i) { return 15 + i*110;}).attr("y", function(d) {return (high-d)/(high-low)*80+40;})
+    .attr("width", 80).attr("height",  function(d) { return (d-low)/(high-low)*80+20;})
+    .attr("fill", function(d,i) { return colors[i];});
+svg.selectAll("text_1").data(names_1).enter().append("text").text(function(d) {return d;})
+    .attr("x", function (d,i) { return i * (110) + 55 ;})
+    .attr("y", 164).style("fill", "black").style("font", "bold")
+    .style("font-size", "12").attr("font-family", "sans-serif")
+    .attr("text-anchor", "middle");
+svg.selectAll("text_2").data(names_2).enter().append("text").text(function(d) {return d;})
+    .attr("x", function (d,i) { return i * (110) + 55 ;})
+    .attr("y", 180).style("fill", "black").style("font", "bold")
+    .style("font-size", "12").attr("font-family", "sans-serif")
+    .attr("text-anchor", "middle");
+svg.selectAll("numbers").data(averages).enter().append("text").text( function(d) {return d;})
+    .attr("x", function (d,i) { return i * (110) + 55 ;})
+    .attr("y", function (d) { return (high-d)/(high-low)*80+54 ;})
+    .style("fill", "white").style("font", "bold").style("font-size", "12")
+    .attr("font-family", "sans-serif").attr("text-anchor", "middle");
+
+    </script>
+    <p>
+      <table class="center"><tr><td><a href="/">home</a></td></tr></table>
     </p>
-    
+
     <hr>
 
     <form action="/overview" method="POST">
-    <table class="center"><tr><td>Payoffs and iterations</td></tr></table>
-    <table style="text-align:center" class="center">
-    <tr><td class="text">Payoff when both cooperate</td><td class="input"><input type="int" name="coop"></td>
-    <td class="text">Payoff when both defect</td><td class="input"><input type="int" name="defect"></td></tr>
-    <tr><td class="text">Payoff for the backstabber</td><td class="input"><input type="int" name="winner"></td>
-    <td class="text">Payoff for the sucker</td><td class="input"><input type="int" name="sucker"></td></tr>
-    <tr><td class="text">Iterations</td><td class="input"><input type="int" name="iterations"></td>
-    </table>
-    <table class="center"><tr><td>Population of strategies</td></tr></table>
-    <table style="text-align:center" class="center">
-    <tr><td class="text">Always cooperate</td><td class="input"><input type="int" name="ac"></td>
-    <td class="text">Always defect</td><td class="input"><input type="int" name="ad"></td></tr>
-    <tr><td class="text">Cooperate 70% of the time</td><td class="input"><input type="int" name="c_70"></td>
-    <td class="text">Cooperate first, then switch</td><td class="input"><input type="int" name="c_switch"></td></tr>
-    <tr><td class="text">Cooperate until D is played</td><td class="input"><input type="int" name="c_until_d"></td>
-    <td class="text">Defect 70% of the time</td><td class="input"><input type="int" name="d_70"></td></tr>
-    <tr><td class="text">Defect first, then switch</td><td class="input"><input type="int" name="d_switch"></td>
-    <td class="text">Defect first, then reciprocate</td><td class="input"><input type="int" name="ntft"></td></tr>
-    <tr><td class="text">Random strategy</td><td class="input"><input type="int" name="rand"></td>
-    <td class="text">Tit for Tat</td><td class="input"><input type="int" name="tft"></td></tr>
-    <tr><td class="input"><input type="submit" name="my-form" value="Update"></td></tr>
-    </table>
+      <table class="center"><tr><td>Payoffs and iterations</td></tr></table>
+      <table style="text-align:center" class="center">
+        <tr><td class="text">Payoff when both cooperate</td><td class="input"><input type="int" name="coop"></td>
+          <td class="text">Payoff when both defect</td><td class="input"><input type="int" name="defect"></td></tr>
+        <tr><td class="text">Payoff for the backstabber</td><td class="input"><input type="int" name="winner"></td>
+          <td class="text">Payoff for the sucker</td><td class="input"><input type="int" name="sucker"></td></tr>
+        <tr><td class="text">Iterations</td><td class="input"><input type="int" name="iterations"></td>
+      </table>
+      <table class="center"><tr><td>Population of strategies</td></tr></table>
+      <table style="text-align:center" class="center">
+        <tr><td class="text">Always cooperate</td><td class="input"><input type="int" name="ac"></td>
+          <td class="text">Always defect</td><td class="input"><input type="int" name="ad"></td></tr>
+        <tr><td class="text">Cooperate 70% of the time</td><td class="input"><input type="int" name="c_70"></td>
+          <td class="text">Cooperate first, then switch</td><td class="input"><input type="int" name="c_switch"></td></tr>
+        <tr><td class="text">Cooperate until D is played</td><td class="input"><input type="int" name="c_until_d"></td>
+          <td class="text">Defect 70% of the time</td><td class="input"><input type="int" name="d_70"></td></tr>
+        <tr><td class="text">Defect first, then switch</td><td class="input"><input type="int" name="d_switch"></td>
+          <td class="text">Defect first, then reciprocate</td><td class="input"><input type="int" name="ntft"></td></tr>
+        <tr><td class="text">Random strategy</td><td class="input"><input type="int" name="rand"></td>
+          <td class="text">Tit for Tat</td><td class="input"><input type="int" name="tft"></td></tr>
+        <tr><td class="input"><input type="submit" name="my-form" value="Update"></td></tr>
+      </table>
     </form>
-	</body>
+  </body>
 </html>
